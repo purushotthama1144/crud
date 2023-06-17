@@ -25,7 +25,16 @@ public class EmployeeService {
         return employeeRepository.save(entity);
     }
 
+    public EmployeeEntity updateEmployee(EmployeeEntity entity) {
+        return employeeRepository.save(entity);
+    }
+
     public List<EmployeeEntity> getEmployeelist() {
         return employeeRepository.findAll();
+    }
+
+    public EmployeeEntity delete(EmployeeEntity entity) {
+        return employeeRepository.save(entity);
+//        return employeeRepository.deleteById(entity.id);
     }
 }

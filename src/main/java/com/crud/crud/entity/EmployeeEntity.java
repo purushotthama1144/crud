@@ -13,7 +13,7 @@ import org.springframework.data.annotation.Transient;
 public class EmployeeEntity {
 
     @Transient
-    public static final String SEQUENCE_NAME = "your_entity_sequence";
+    public static final String SEQUENCE_NAME = "My_total_sequence_id's";
 
     @Id
     public long id;

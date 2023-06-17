@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -29,4 +28,13 @@ public class EmployeeController {
         return new ResponseEntity<EmployeeEntity>(employeeService.saveEmployee(employee) , HttpStatus.ACCEPTED);
     }
 
+    @RequestMapping(value = "/updateEmployee", method = POST)
+    public ResponseEntity<EmployeeEntity> updateEmployee(@RequestBody EmployeeEntity employee) {
+        return new ResponseEntity<EmployeeEntity>(employeeService.updateEmployee(employee) , HttpStatus.ACCEPTED);
+    }
+
+    @RequestMapping(value = "/deleteEmployee", method = DELETE)
+    public ResponseEntity<EmployeeEntity> deleteEmployee(@RequestBody EmployeeEntity employee) {
+        return new ResponseEntity<EmployeeEntity>(employeeService.delete(employee) , HttpStatus.ACCEPTED);
+    }
 }
