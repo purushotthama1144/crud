@@ -7,12 +7,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin
 @RestController
 public class EmployeeController {
     @Autowired
@@ -23,9 +22,14 @@ public class EmployeeController {
         return new ResponseEntity<List<EmployeeEntity>>(employeeService.getEmployeelist() , HttpStatus.ACCEPTED);
     }
 
+
     @RequestMapping(value = "/addEmployee", method = POST)
     public ResponseEntity<EmployeeEntity> saveEmployee(@RequestBody EmployeeEntity employee) {
-        return new ResponseEntity<EmployeeEntity>(employeeService.saveEmployee(employee) , HttpStatus.ACCEPTED);
+        try {
+            return new ResponseEntity<EmployeeEntity>(employeeService.saveEmployee(employee) , HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @RequestMapping(value = "/updateEmployee", method = POST)
@@ -33,8 +37,8 @@ public class EmployeeController {
         return new ResponseEntity<EmployeeEntity>(employeeService.updateEmployee(employee) , HttpStatus.ACCEPTED);
     }
 
-    @RequestMapping(value = "/deleteEmployee", method = DELETE)
-    public ResponseEntity<EmployeeEntity> deleteEmployee(@RequestBody EmployeeEntity employee) {
-        return new ResponseEntity<EmployeeEntity>(employeeService.delete(employee) , HttpStatus.ACCEPTED);
+    @RequestMapping(value = "/deleteEmployee/{id}", method = DELETE)
+    public ResponseEntity<EmployeeEntity> deleteEmployee(@PathVariable("id") EmployeeEntity id) {
+        return new ResponseEntity<EmployeeEntity>(employeeService.delete(id), HttpStatus.ACCEPTED);
     }
 }
