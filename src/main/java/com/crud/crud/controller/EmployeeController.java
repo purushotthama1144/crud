@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -22,23 +23,32 @@ public class EmployeeController {
         return new ResponseEntity<List<EmployeeEntity>>(employeeService.getEmployeelist() , HttpStatus.ACCEPTED);
     }
 
-
     @RequestMapping(value = "/addEmployee", method = POST)
     public ResponseEntity<EmployeeEntity> saveEmployee(@RequestBody EmployeeEntity employee) {
         try {
-            return new ResponseEntity<EmployeeEntity>(employeeService.saveEmployee(employee) , HttpStatus.CREATED);
+            return new ResponseEntity<>(employeeService.saveEmployee(employee), HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(null , HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    @RequestMapping(value = "/updateEmployee", method = POST)
-    public ResponseEntity<EmployeeEntity> updateEmployee(@RequestBody EmployeeEntity employee) {
-        return new ResponseEntity<EmployeeEntity>(employeeService.updateEmployee(employee) , HttpStatus.ACCEPTED);
+    @RequestMapping(value = "/deleteEmployee/{id}", method = DELETE)
+    public ResponseEntity<EmployeeEntity> deleteEmployee(@PathVariable Long id) {
+        employeeService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @RequestMapping(value = "/deleteEmployee/{id}", method = DELETE)
-    public ResponseEntity<EmployeeEntity> deleteEmployee(@PathVariable("id") EmployeeEntity id) {
-        return new ResponseEntity<EmployeeEntity>(employeeService.delete(id), HttpStatus.ACCEPTED);
+    @RequestMapping(value = "/employeeDetails/{id}", method = GET)
+    public ResponseEntity<EmployeeEntity> getEmployeeById(@PathVariable Long id) {
+        Optional<EmployeeEntity> employee = employeeService.getEmployeeById(id);
+        return employee.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @RequestMapping(value = "/updateEmployee/{id}" , method = PUT)
+    public ResponseEntity<EmployeeEntity> updateEmployee(@PathVariable Long id, @RequestBody EmployeeEntity employee) {
+        EmployeeEntity updatedEmployee = employeeService.updateEmployee(id, employee);
+        return ResponseEntity.ok(updatedEmployee);
     }
 }

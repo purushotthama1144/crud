@@ -1,6 +1,7 @@
 package com.crud.crud.entity;
 
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,16 +19,17 @@ public class EmployeeEntity {
     public static final String SEQUENCE_NAME = "My_total_sequence_id's";
 
     @Id
-    public int id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     public  String employeeFirstName;
     public  String employeeLastName;
     public String employeeEmailId;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

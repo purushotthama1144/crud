@@ -2,6 +2,7 @@ package com.crud.crud.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import com.crud.crud.entity.EmployeeEntity;
-import java.util.List;
-public interface EmployeeRepository extends MongoRepository<EmployeeEntity, Integer> {
+
+public interface EmployeeRepository extends MongoRepository<EmployeeEntity, Long> {
+EmployeeEntity findByEmployeeEmailId(String email);
 }

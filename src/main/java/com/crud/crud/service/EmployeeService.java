@@ -4,11 +4,11 @@ import com.crud.crud.entity.EmployeeEntity;
 import com.crud.crud.repository.EmployeeRepository;
 import com.crud.crud.sequenceIdGenerator.SequenceGeneratorService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
@@ -24,25 +24,42 @@ public class EmployeeService {
         this.sequenceGenerator = sequenceGenerator;
     }
 
-    public EmployeeEntity saveEmployee(EmployeeEntity entity) {
+    public EmployeeEntity saveEmployee(EmployeeEntity employee) {
+
         try {
-            entity.setId((int) sequenceGenerator.generateSequence(EmployeeEntity.SEQUENCE_NAME));
-            return employeeRepository.save(entity);
+            String email = employee.getEmployeeEmailId();
+            if (employeeRepository.findByEmployeeEmailId(email) != null) {
+                throw new IllegalArgumentException("Employee with the same email already exists.");
+            }
+            employee.setId(sequenceGenerator.generateSequence(EmployeeEntity.SEQUENCE_NAME));
+            return employeeRepository.save(employee);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public EmployeeEntity updateEmployee(EmployeeEntity entity) {
-        return employeeRepository.save(entity);
+    public EmployeeEntity updateEmployee(Long id, EmployeeEntity employee) {
+        Optional<EmployeeEntity> optionalEmployee = employeeRepository.findById(id);
+        if (optionalEmployee.isPresent()) {
+            EmployeeEntity existingEmployee = optionalEmployee.get();
+            existingEmployee.setEmployeeFirstName(employee.getEmployeeFirstName());
+            existingEmployee.setEmployeeLastName(employee.getEmployeeLastName());
+            existingEmployee.setEmployeeEmailId(employee.getEmployeeEmailId());
+            return employeeRepository.save(existingEmployee);
+        } else {
+            throw new IllegalArgumentException("Employee not found with ID: " + id);
+        }
     }
 
     public List<EmployeeEntity> getEmployeelist() {
         return employeeRepository.findAll();
     }
 
-    public EmployeeEntity delete(EmployeeEntity entity) {
-        this.employeeRepository.deleteById(entity.id);
-        return entity;
+    public void delete(Long id) {
+        employeeRepository.deleteById(id);
+    }
+
+    public Optional<EmployeeEntity> getEmployeeById(Long id) {
+        return employeeRepository.findById(id);
     }
 }
